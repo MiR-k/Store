@@ -6,6 +6,7 @@ using Moq;
 using Ninject;
 using TAiMStore.Domain;
 using TAiMStore.Model.Abstract;
+using TAiMStore.Model.Concrete;
 
 namespace TAiMStore.WebUI.Infrastructure
 {
@@ -31,14 +32,7 @@ namespace TAiMStore.WebUI.Infrastructure
 
         private void AddBindings()
         {
-            Mock<IProductRepository> mock = new Mock<IProductRepository>();
-            mock.Setup(m => m.Products).Returns(new List<Product>
-            {
-                new Product { Name = "Ступица", Price = 10 },
-                new Product { Name = "Вал", Price=19 },
-                new Product { Name = "Подшипник", Price=899.4M }
-            });
-            kernel.Bind<IProductRepository>().ToConstant(mock.Object);
+            kernel.Bind<IProductRepository>().To<EFProductRepository>();
         }
     }
 }
