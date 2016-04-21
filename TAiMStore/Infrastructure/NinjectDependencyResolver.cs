@@ -5,8 +5,7 @@ using System.Web.Mvc;
 using Moq;
 using Ninject;
 using TAiMStore.Domain;
-using TAiMStore.Domain.Abstract;
-using TAiMStore.Domain;
+using TAiMStore.Model.Abstract;
 
 namespace TAiMStore.WebUI.Infrastructure
 {

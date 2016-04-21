@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using TAiMStore;
+using TAiMStore.Domain;
 
-namespace TAiMStore.Domain.Abstract
+namespace TAiMStore.Model.Abstract
 {
     public interface IProductRepository
     {
