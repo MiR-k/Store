@@ -71,13 +71,21 @@
     <Compile Include="Category.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Contacts.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Entity.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Order.cs" />
+    <Compile Include="OrderProduct.cs" />
+    <Compile Include="PaymentType.cs" />
     <Compile Include="Product.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Role.cs" />
+    <Compile Include="User.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
