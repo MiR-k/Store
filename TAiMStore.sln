@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TAIMStore.WEb", "TAIMStore.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TAIMStore.Test", "TAIMStore.Test", "{78611FC6-851C-4AE9-A913-7219FC53D51C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TAiMStore.Domain", "TAiMStore.Domain\TAiMStore.Domain.csproj", "{3DFBE8BB-7B51-42E8-9303-3FDBBA590497}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TAiMStore.Entities", "TAiMStore.Domain\TAiMStore.Entities.csproj", "{3DFBE8BB-7B51-42E8-9303-3FDBBA590497}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TAiMStore.Model", "TAiMStore.Model\TAiMStore.Model.csproj", "{32379D2B-F0DB-42F6-AAE6-117FFBE30F53}"
 EndProject

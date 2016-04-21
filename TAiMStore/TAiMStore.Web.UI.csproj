@@ -126,6 +126,16 @@
     <Folder Include="Controllers\" />
     <Folder Include="Models\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TAiMStore.Domain\TAiMStore.Entities.csproj">
+      <Project>{3dfbe8bb-7b51-42e8-9303-3fdbba590497}</Project>
+      <Name>TAiMStore.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TAiMStore.Model\TAiMStore.Model.csproj">
+      <Project>{32379d2b-f0db-42f6-aae6-117ffbe30f53}</Project>
+      <Name>TAiMStore.Model</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

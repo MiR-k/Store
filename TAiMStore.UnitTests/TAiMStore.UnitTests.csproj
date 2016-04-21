@@ -35,6 +35,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
       <Private>True</Private>
@@ -56,6 +57,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.0.0\lib\net45\System.Web.Helpers.dll</HintPath>
       <Private>True</Private>
@@ -105,6 +107,20 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TAiMStore.Domain\TAiMStore.Entities.csproj">
+      <Project>{3dfbe8bb-7b51-42e8-9303-3fdbba590497}</Project>
+      <Name>TAiMStore.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TAiMStore.Model\TAiMStore.Model.csproj">
+      <Project>{32379d2b-f0db-42f6-aae6-117ffbe30f53}</Project>
+      <Name>TAiMStore.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TAiMStore\TAiMStore.Web.UI.csproj">
+      <Project>{781b8bec-3f49-4abf-8ca1-ec73fdf65a9b}</Project>
+      <Name>TAiMStore.Web.UI</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
