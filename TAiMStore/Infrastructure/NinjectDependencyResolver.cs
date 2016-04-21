@@ -4,6 +4,9 @@ using System.Configuration;
 using System.Web.Mvc;
 using Moq;
 using Ninject;
+using TAiMStore.Domain;
+using TAiMStore.Domain.Abstract;
+using TAiMStore.Domain;
 
 namespace TAiMStore.WebUI.Infrastructure
 {
@@ -29,14 +32,14 @@ namespace TAiMStore.WebUI.Infrastructure
 
         private void AddBindings()
         {
-            //Mock<ITAiMRepository> mock = new Mock<ITAiMRepository>();
-            //mock.Setup(m => m.Products).Returns(new List<Product>
-            //{
-            //    new Product { Name = "Ступица", Price = 10 },
-            //    new Product { Name = "Вал", Price=19 },
-            //    new Product { Name = "Подшипник", Price=899.4M }
-            //});
-            //kernel.Bind<ITAiMRepository>().ToConstant(mock.Object);
+            Mock<IProductRepository> mock = new Mock<IProductRepository>();
+            mock.Setup(m => m.Products).Returns(new List<Product>
+            {
+                new Product { Name = "Ступица", Price = 10 },
+                new Product { Name = "Вал", Price=19 },
+                new Product { Name = "Подшипник", Price=899.4M }
+            });
+            kernel.Bind<IProductRepository>().ToConstant(mock.Object);
         }
     }
 }
