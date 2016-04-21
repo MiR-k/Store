@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TAIMStore.Domain", "TAIMStore.Domain", "{2C385500-2139-498F-A20F-96E1D03B4475}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TAIMStore.WEb", "TAIMStore.WEb", "{444EC506-8691-45BF-8979-6106AC818B11}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TAIMStore.Test", "TAIMStore.Test", "{78611FC6-851C-4AE9-A913-7219FC53D51C}"
+EndProject
+Global
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
