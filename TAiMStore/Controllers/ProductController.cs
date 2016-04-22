@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using TAiMStore.Model;
 using TAiMStore.Model.Abstract;
+using TAiMStore.Models;
 
 namespace TAiMStore.Controllers
 {
@@ -20,10 +21,20 @@ namespace TAiMStore.Controllers
 
         public ViewResult List(int page = 1)
         {
-            return View(repository.Products
+            ProductsListViewModel model = new ProductsListViewModel
+            {
+                Products = repository.Products
                 .OrderBy(prod => prod.Id)
                 .Skip((page-1)*pageSize)
-                .Take(pageSize));
+                .Take(pageSize),
+                PagingInfo = new PagingInfo
+                {
+                    CurrentPage = page,
+                    ItemsPerPage = pageSize,
+                    TotalItems = repository.Products.Count()
+                }                
+            };  
+            return View(model);
         }
     }
 }

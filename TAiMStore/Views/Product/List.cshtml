@@ -1,15 +1,23 @@
-﻿@using TAiMStore.Domain;
-@model IEnumerable<Product>
+﻿@using TAiMStore.Models;
+@using TAiMStore.HtmlHelpers;
+@model ProductsListViewModel
+
 @{
     ViewBag.Title = "Товары";
 }
 
-@foreach (var p in @Model)
+@foreach (var p in @Model.Products)
 {
     <div>
         <h3>@p.Name</h3>
         <p>@p.Description</p>
+        <p>@p.DescriptionSecond</p>
+
         <h4>@p.Price.ToString(",#. руб ## коп")</h4>
     </div>
 }
+
+<div>
+    @Html.PageLinks(Model.PagingInfo, x => Url.Action("List", new { page = x }))
+</div>
 
