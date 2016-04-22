@@ -8,7 +8,7 @@ using TAiMStore.Domain;
 using TAiMStore.Model.Abstract;
 using TAiMStore.Model.Concrete;
 
-namespace TAiMStore.WebUI.Infrastructure
+namespace TAiMStore.Infrastructure
 {
     public class NinjectDependencyResolver : IDependencyResolver
     {

@@ -54,7 +54,7 @@ namespace TAiMStore.App_Start
         private static void RegisterServices(IKernel kernel)
         {
             System.Web.Mvc.DependencyResolver.SetResolver(new
-                TAiMStore.WebUI.Infrastructure.NinjectDependencyResolver(kernel));
+                TAiMStore.Infrastructure.NinjectDependencyResolver(kernel));
         }        
     }
 }
