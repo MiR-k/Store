@@ -76,7 +76,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Abstract\IProductRepository.cs" />
+    <Compile Include="Abstract\IProductRepository.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Classes\Constants\ConstantStrings.cs" />
     <Compile Include="Concrete\EFDbContext.cs" />
     <Compile Include="Concrete\EFProductRepository.cs" />
