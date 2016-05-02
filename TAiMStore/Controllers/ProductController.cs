@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using TAiMStore.Model;
 using TAiMStore.Model.Abstract;
-using TAiMStore.Models;
+using TAiMStore.Model.ViewModels;
 
 namespace TAiMStore.Controllers
 {

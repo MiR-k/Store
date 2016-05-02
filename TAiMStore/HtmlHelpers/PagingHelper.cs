@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Web.Mvc;
-using TAiMStore.Models;
+using TAiMStore.Model.ViewModels;
 
 namespace TAiMStore.HtmlHelpers
 {
