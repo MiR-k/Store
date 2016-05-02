@@ -21,7 +21,7 @@ namespace TAiMStore.Controllers
 
         public ViewResult List(int page = 1)
         {
-            ProductsListViewModel model = new ProductsListViewModel
+            ProductsViewModel model = new ProductsViewModel
             {
                 Products = repository.Products
                 .OrderBy(prod => prod.Id)

@@ -1,6 +1,6 @@
 ﻿@using TAiMStore.Model.ViewModels;
 @using TAiMStore.HtmlHelpers;
-@model ProductsListViewModel
+@model ProductsViewModel
 
 @{
     ViewBag.Title = "Товары";
@@ -8,16 +8,7 @@
 
 @foreach (var p in @Model.Products)
 {
-    <div class="well">
-        <h3>
-            <strong>@p.Name</strong>
-            <span class="pull-right label label-primary">@p.Price.ToString(",#. руб ## коп")</span>
-        </h3>
-        <span class="lead">
-            <p>@p.Description</p>
-            <p>@p.DescriptionSecond</p>
-        </span>
-    </div>
+    @Html.Partial("ProductSummary",p)
 }
 
 <div class="btn-group pull-left">

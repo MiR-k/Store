@@ -3,10 +3,10 @@
 <div class="well">
     <h3>
         <strong>@Model.Name</strong>
-        <span class="pull-right label label-primary">@Model.Price.ToString("# руб")</span>
+        <span class="pull-right label label-primary">@Model.Price.ToString(",#. руб ## коп")</span>
     </h3>
     <span class="lead">
-        @Model.Description
-        @Model.DescriptionSecond
+        <p>@Model.Description</p>
+        <p>@Model.DescriptionSecond</p>
     </span>
 </div>
