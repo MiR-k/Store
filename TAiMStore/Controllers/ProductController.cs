@@ -20,21 +20,23 @@ namespace TAiMStore.Controllers
             repository = repo;
         }
 
-        public ViewResult List(int page = 1)
+        public ViewResult List(string category, int page = 1)
         {
             ProductsViewModel model = new ProductsViewModel
             {
                 Products = repository.Products
-                .OrderBy(prod => prod.Id)
-                .Skip((page-1)*pageSize)
+                .Where(p => category == null || p.Category == category)
+                .OrderBy(p => p.Id)
+                .Skip((page - 1) * pageSize)
                 .Take(pageSize),
                 PagingInfo = new PagingInfo
                 {
                     CurrentPage = page,
                     ItemsPerPage = pageSize,
                     TotalItems = repository.Products.Count()
-                }                
-            };  
+                },
+                CurrentCategory = category
+            };
             return View(model);
         }
     }
