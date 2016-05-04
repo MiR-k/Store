@@ -33,7 +33,8 @@ namespace TAiMStore.Domain
         public byte[] ImageData { get; set; }
         public string ImageMimeType { get; set; }
 
-        public virtual Category Category { get; set; }
+        public string Category { get; set; }
+        //public virtual Category Category { get; set; }
 
         public ICollection<OrderProduct> OrderProducts { get; set; }
     }
