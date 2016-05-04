@@ -14,6 +14,7 @@ namespace TAiMStore.Controllers
         // GET: Product
         private IProductRepository repository;
         public int pageSize = 4;
+
         public ProductController(IProductRepository repo)
         {
             repository = repo;
