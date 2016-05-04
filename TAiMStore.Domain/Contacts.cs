@@ -1,4 +1,5 @@
-﻿namespace TAiMStore.Domain
+﻿using System.Collections.Generic;
+namespace TAiMStore.Domain
 {
     public class Contacts: Entity
     {
@@ -13,6 +14,6 @@
         public string Telephone { get; set; }
         
         //связи
-        public User User { get; set; }
+        public ICollection<User> User { get; set; }
     }
 }

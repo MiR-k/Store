@@ -9,6 +9,7 @@ namespace TAiMStore.Domain
         //
         public virtual User User { get; set; }
         public virtual PaymentType Payment { get; set; }
-        public virtual OrderProduct OrderProduct { get; set; }
+
+        public ICollection<OrderProduct> OrderProducts { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿namespace TAiMStore.Domain
+﻿using System.Collections.Generic;
+namespace TAiMStore.Domain
 {
     public class PaymentType : Entity
     {
@@ -6,6 +7,6 @@
         public string NameMethod { get; set; }
 
         //связи
-        public virtual Order Order { get; set; }
+        public ICollection<Order> Orders { get; set; }
     }
 }
