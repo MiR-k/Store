@@ -9,19 +9,23 @@
     <title>@ViewBag.Title</title>
 </head>
 <body>
-    <div class="navbar navbar-inverse" role="navigation">
-        <a class="navbar-brand" href="#">Интернет-магазин @ConstantStrings.NameCompany</a>
-    </div>
+    <header>
+        <div class="navbar navbar-inverse" role="navigation">
+            <a class="navbar-brand" href="#">Интернет-магазин @ConstantStrings.NameCompany</a>
+        </div>
+    </header>
     <div class="row panel">
         <div id="categories" class="col-xs-3">
-            Навигация
+           @Html.Action("Menu", "Nav")
         </div>
         <div class="col-xs-8">
             @RenderBody()
         </div>
     </div>
-    <div>
-        <p align="center">&copy; @DateTime.Now.Year - @ConstantStrings.NameCompany</p>
-    </div>
+    <footer>
+        <div>
+            <p align="center">&copy; @DateTime.Now.Year - @ConstantStrings.NameCompany</p>
+        </div>
+    </footer>
 </body>
 </html>

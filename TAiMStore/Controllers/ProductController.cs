@@ -33,7 +33,9 @@ namespace TAiMStore.Controllers
                 {
                     CurrentPage = page,
                     ItemsPerPage = pageSize,
-                    TotalItems = repository.Products.Count()
+                    TotalItems = category == null ?
+                    repository.Products.Count():
+                    repository.Products.Where(p => category == null || p.Category == category).Count()
                 },
                 CurrentCategory = category
             };
