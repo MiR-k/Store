@@ -4,6 +4,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using TAiMStore.Model.ViewModels;
+using TAiMStore.WebUI.Infrastructure.Binders;
 
 namespace TAiMStore
 {
@@ -13,6 +15,7 @@ namespace TAiMStore
         {
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
+            ModelBinders.Binders.Add(typeof(Cart), new CartModelBinder());
         }
     }
 }

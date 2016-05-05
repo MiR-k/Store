@@ -31,6 +31,7 @@ namespace TAiMStore.Domain
 
         [Column(TypeName = "image")]
         public byte[] ImageData { get; set; }
+        [HiddenInput(DisplayValue = false)]
         public string ImageMimeType { get; set; }
 
         public string Category { get; set; }

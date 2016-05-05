@@ -8,13 +8,7 @@ namespace TAiMStore.Model
     public class StoreContext : DbContext
     {
         public DbSet<Product> Products { get; set; }
-        public DbSet<Category> Categories { get; set; }
-        public DbSet<Order> Orders { get; set; }
-        public DbSet<OrderProduct> OrderProducts { get; set; }
-        public DbSet<PaymentType> PaymentType { get; set; }
-        public DbSet<User> Users { get; set; }
-        public DbSet<Contacts> Contacts { get; set; }
-        public DbSet<Role> Roles { get; set; }
+
 
         public override int SaveChanges()
         {
