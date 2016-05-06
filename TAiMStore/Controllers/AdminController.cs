@@ -2,9 +2,11 @@
 using System.Linq;
 using TAiMStore.Domain;
 using TAiMStore.Model.Abstract;
+using System.Web;
 
 namespace TAiMStore.WebUI.Controllers
 {
+    [Authorize]
     public class AdminController : Controller
     {
         IProductRepository _repository;
@@ -27,10 +29,16 @@ namespace TAiMStore.WebUI.Controllers
         }
 
         [HttpPost]
-        public ActionResult Edit(Product product)
+        public ActionResult Edit(Product product, HttpPostedFileBase image = null)
         {
             if (ModelState.IsValid)
             {
+                if (image != null)
+                {
+                    product.ImageMimeType = image.ContentType;
+                    product.ImageData = new byte[image.ContentLength];
+                    image.InputStream.Read(product.ImageData, 0, image.ContentLength);
+                }
                 _repository.SaveProduct(product);
                 TempData["message"] = string.Format("Изменения товара \"{0}\" сохранены", product.Name);
                 return RedirectToAction("Index");
@@ -58,5 +66,6 @@ namespace TAiMStore.WebUI.Controllers
             }
             return RedirectToAction("Index");
         }
+
     }
 }

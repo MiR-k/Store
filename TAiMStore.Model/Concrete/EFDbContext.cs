@@ -9,6 +9,7 @@ namespace TAiMStore.Model.Concrete
     {
         public DbSet<Product> Products { get; set; }
 
+
         public override int SaveChanges()
         {
             foreach (var source in ChangeTracker.Entries().Where(e => e.State == EntityState.Added))

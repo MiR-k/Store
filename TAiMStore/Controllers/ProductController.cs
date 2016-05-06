@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using TAiMStore.Domain;
 using TAiMStore.Model;
 using TAiMStore.Model.Abstract;
 using TAiMStore.Model.ViewModels;
@@ -12,19 +13,19 @@ namespace TAiMStore.Controllers
     public class ProductController : Controller
     {
         // GET: Product
-        private IProductRepository repository;
+        private IProductRepository _repository;
         public int pageSize = 4;
 
-        public ProductController(IProductRepository repo)
+        public ProductController(IProductRepository productRepository)
         {
-            repository = repo;
+            _repository = productRepository;
         }
 
         public ViewResult List(string category, int page = 1)
         {
             ProductsViewModel model = new ProductsViewModel
             {
-                Products = repository.Products
+                Products = _repository.Products
                 .Where(p => category == null || p.Category == category)
                 .OrderBy(p => p.Id)
                 .Skip((page - 1) * pageSize)
@@ -34,12 +35,33 @@ namespace TAiMStore.Controllers
                     CurrentPage = page,
                     ItemsPerPage = pageSize,
                     TotalItems = category == null ?
-                    repository.Products.Count():
-                    repository.Products.Where(p => category == null || p.Category == category).Count()
+                    _repository.Products.Count():
+                    _repository.Products.Where(p => category == null || p.Category == category).Count()
                 },
                 CurrentCategory = category
             };
             return View(model);
+        }
+
+        public ViewResult Product(string Id)
+        {
+         
+            return null;
+        }
+
+        public FileContentResult GetImage(int Id)
+        {
+            Product game = _repository.Products
+                .FirstOrDefault(p => p.Id == Id);
+
+            if (game != null)
+            {
+                return File(game.ImageData, game.ImageMimeType);
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }
