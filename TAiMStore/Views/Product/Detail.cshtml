@@ -1,0 +1,58 @@
+﻿@model TAiMStore.Domain.Product
+
+@{
+    ViewBag.Title = "Подробее о товаре" + @Model.Name;
+}
+
+@Html.Hidden("Id", Model.Id)
+<table>
+    <tr>
+        <td>
+            <label>Товар</label>
+        </td>
+        <td>@Html.Label("name", Model.Name)</td>
+        <div> 
+            @using (Html.BeginForm("AddToCart", "Cart"))
+            {
+                <div class="pull-right">
+                    @Html.HiddenFor(x => x.Id)
+                    @Html.Hidden("returnUrl", Request.Url.PathAndQuery)
+                    <input type="submit" class="btn btn-success" value="Добавить в корзину" />
+                </div>
+            }
+        </div>
+    </tr>
+    <tr>
+        <td>
+            <label>Описание</label>
+        </td>
+        <td>@Html.Label("Description", Model.Description)</td>
+    </tr>
+    <tr>
+        <td>
+            <label>Подробное описание</label>
+        </td>
+        <td>@Html.Label("DescriptionSecond", Model.DescriptionSecond)</td>
+    </tr>
+    <tr>
+        <td>
+            <label>Цена</label>
+        </td>
+        <td>@Html.Label("Price", Model.Price.ToString("#. руб # коп."))</td>
+    </tr>
+    <tr>
+        <td>
+            @if (Model.ImageData != null)
+            {
+                <div class="pull-left" style="margin-right: 10px">
+                    <img class="img-thumbnail" width="75" height="75"
+                         src="@Url.Action("GetImage", "Product",
+                new { Model.Id })" />
+                </div>
+            } else
+            { 
+                <tr>НЕТ картинки</tr>
+            }
+         </td>
+     </tr>
+</table>
