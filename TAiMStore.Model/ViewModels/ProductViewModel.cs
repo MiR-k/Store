@@ -7,30 +7,32 @@ namespace TAiMStore.Model.ViewModels
 {
     public class ProductViewModel
     {
-        [HiddenInput(DisplayValue = false)]
-        public int Id { get; set; }
 
-        [Required(ErrorMessage = "Пожалуйста введите имя")]
-        public string Name { get; set; }
+        public IEnumerable<Product> Product { get; set; }
+        //[HiddenInput(DisplayValue = false)]
+        //public int Id { get; set; }
 
-        [DataType(DataType.MultilineText)]
-        [Required(ErrorMessage = "Пожалуйста введите описание")]
-        public string Description { get; set; }
+        //[Required(ErrorMessage = "Пожалуйста введите имя")]
+        //public string Name { get; set; }
 
-        [Required]
-        [Range(0.01, double.MaxValue, ErrorMessage = "Пожалуйста введите положительную цену")]
-        public decimal Price { get; set; }
+        //[DataType(DataType.MultilineText)]
+        //[Required(ErrorMessage = "Пожалуйста введите описание")]
+        //public string Description { get; set; }
 
-        [DataType(DataType.MultilineText)]
-        public string DescriptionSecond { get; set; }
+        //[Required]
+        //[Range(0.01, double.MaxValue, ErrorMessage = "Пожалуйста введите положительную цену")]
+        //public decimal Price { get; set; }
 
-        public byte[] ImageData { get; set; }
+        //[DataType(DataType.MultilineText)]
+        //public string DescriptionSecond { get; set; }
 
-        [HiddenInput(DisplayValue = false)]
-        public string ImageMimeType { get; set; }
+        //public byte[] ImageData { get; set; }
 
-        [Required(ErrorMessage = "Please specify category")]
-        public string Category { get; set; }
+        //[HiddenInput(DisplayValue = false)]
+        //public string ImageMimeType { get; set; }
+
+        //[Required(ErrorMessage = "Please specify category")]
+        //public string Category { get; set; }
 
     }
 }

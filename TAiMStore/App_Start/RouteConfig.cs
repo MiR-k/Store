@@ -24,6 +24,15 @@ namespace TAiMStore
                 }
             );
 
+            routes.MapRoute(null,
+                "Product/Id{Id}",
+                defaults: new
+                {
+                    controller = "Product",
+                    action = "Product",
+                }
+            );
+
             routes.MapRoute(
                 name: null,
                 url: "Page{page}",

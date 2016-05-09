@@ -43,10 +43,22 @@ namespace TAiMStore.Controllers
             return View(model);
         }
 
-        public ViewResult Product(string Id)
+        public ViewResult Product(int Id)
         {
-         
-            return null;
+            ProductsViewModel model = new ProductsViewModel
+            {
+                Products = _repository.Products
+                .Where(p => p.Id == Id)
+                .OrderBy(p => p.Id),
+                PagingInfo = new PagingInfo
+                {
+                    CurrentPage = 0,
+                    ItemsPerPage = pageSize,
+                    TotalItems = _repository.Products.Count()
+                },
+                CurrentCategory = null
+            };
+            return View(model);
         }
 
         public FileContentResult GetImage(int Id)
