@@ -12,12 +12,12 @@ namespace TAiMStore.Domain
         public int Id { get; set; }
 
         [Display(Name = "Название")]
-        [Required(ErrorMessage = "Пожалуйста, введите название игры")]
+        [Required(ErrorMessage = "Пожалуйста, введите название")]
         public string Name { get; set; }
 
         [DataType(DataType.MultilineText)]
         [Display(Name = "Описание")]
-        [Required(ErrorMessage = "Пожалуйста, введите описание для игры")]
+        [Required(ErrorMessage = "Пожалуйста, введите описание")]
         public string Description { get; set; }
 
         [DataType(DataType.MultilineText)]
@@ -33,9 +33,10 @@ namespace TAiMStore.Domain
         public byte[] ImageData { get; set; }
         [HiddenInput(DisplayValue = false)]
         public string ImageMimeType { get; set; }
-
-        public string Category { get; set; }
-        //public virtual Category Category { get; set; }
+        
+        [Required(ErrorMessage = "Please specify category")]
+        //public string Category { get; set; }
+        public virtual Category Category { get; set; }
 
         public ICollection<OrderProduct> OrderProducts { get; set; }
     }

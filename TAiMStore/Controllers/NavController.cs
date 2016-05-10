@@ -4,28 +4,42 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using TAiMStore.Model.Abstract;
+using TAiMStore.Model.ViewModels;
 
 namespace TAiMStore.Controllers
 {
     public class NavController : Controller
     {
         // GET: Nav
-        private IProductRepository repository;
+        protected readonly IProductRepository _productRepository;
+        protected readonly ICategoryRepository _categoryRepository;
 
-        public NavController(IProductRepository repo)
+        public NavController(IProductRepository productRepository,ICategoryRepository categoryRepository)
         {
-            repository = repo;
+            _productRepository = productRepository;
+            _categoryRepository = categoryRepository;
         }
 
         public PartialViewResult Menu(string category = null)
         {
             ViewBag.SelectedCategory = category;
-
-            IEnumerable<string> categories = repository.Products
-                .Select(p => p.Category)
+            var categories = _categoryRepository.Categories.ToList();
+            var categoryList = new Dictionary<CategoryViewModel, double>();
+            foreach (var entity in categories)
+            {
+                var newCat = new CategoryViewModel();
+                newCat.CategoryName = entity.Name;
+                categoryList.Add(newCat, 0);
+            }
+            return PartialView(categoryList);
+        }
+    }
+    /**
+            IEnumerable<string> categories = _categoryRepository.Categories
+                .Select(p => p.Name)
                 .Distinct()
                 .OrderBy(x => x);
             return PartialView(categories);
-        }
-    }
+**/
 }
+

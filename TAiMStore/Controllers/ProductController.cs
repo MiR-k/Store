@@ -23,20 +23,31 @@ namespace TAiMStore.Controllers
 
         public ViewResult List(string category, int page = 1)
         {
-            ProductsViewModel model = new ProductsViewModel
-            {
-                Products = _repository.Products
-                .Where(p => category == null || p.Category == category)
+            var products = _repository.Products
+                .Where(p => p.Category == null || p.Category.Name == category)
+                .ToList()
                 .OrderBy(p => p.Id)
                 .Skip((page - 1) * pageSize)
-                .Take(pageSize),
+                .Take(pageSize);
+            var productsViewModel = new List<ProductViewModel>();
+
+            foreach (var product in products)
+            {
+                var productViewModel = new ProductViewModel();
+                productViewModel.EntityToProductViewModel(product);
+                productsViewModel.Add(productViewModel);
+            }
+
+            ProductsViewModel model = new ProductsViewModel
+            {
+                Products = productsViewModel,
                 PagingInfo = new PagingInfo
                 {
                     CurrentPage = page,
                     ItemsPerPage = pageSize,
                     TotalItems = category == null ?
                     _repository.Products.Count():
-                    _repository.Products.Where(p => category == null || p.Category == category).Count()
+                    _repository.Products.Where(p => p.Category.Name == category).Count()
                 },
                 CurrentCategory = category
             };

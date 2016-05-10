@@ -1,11 +1,13 @@
-﻿@model IEnumerable<string>
+﻿@model Dictionary<TAiMStore.Model.ViewModels.CategoryViewModel, double>
+
+
 
 @Html.ActionLink("Домой", "List", "Product", null,
     new { @class = "btn btn-block btn-default btn-lg" })
 
 @foreach (var link in Model)
 {
-    @Html.RouteLink(link, new
+    @Html.RouteLink(link.Key.CategoryName, new
     {
         controller = "Product",
         action = "List",
@@ -13,7 +15,6 @@
         page = 1
     }, new
     {
-        @class = "btn btn-block btn-default btn-lg"
-           + (link == ViewBag.SelectedCategory ? " btn-primary" : "")
+        @class = link.Key.CategoryName == ViewBag.SelectedCategory ? "selected" : null
      })
 }
