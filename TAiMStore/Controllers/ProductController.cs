@@ -43,32 +43,22 @@ namespace TAiMStore.Controllers
             return View(model);
         }
 
-        public ViewResult Product(int Id)
+        public ViewResult Detail(int Id)
         {
-            ProductsViewModel model = new ProductsViewModel
-            {
-                Products = _repository.Products
-                .Where(p => p.Id == Id)
-                .OrderBy(p => p.Id),
-                PagingInfo = new PagingInfo
-                {
-                    CurrentPage = 0,
-                    ItemsPerPage = pageSize,
-                    TotalItems = _repository.Products.Count()
-                },
-                CurrentCategory = null
-            };
-            return View(model);
+
+            Product product = _repository.Products
+                .FirstOrDefault(p => p.Id == Id);
+            return View(product);
         }
 
         public FileContentResult GetImage(int Id)
         {
-            Product game = _repository.Products
+            Product product = _repository.Products
                 .FirstOrDefault(p => p.Id == Id);
 
-            if (game != null)
+            if (product != null)
             {
-                return File(game.ImageData, game.ImageMimeType);
+                return File(product.ImageData, product.ImageMimeType);
             }
             else
             {

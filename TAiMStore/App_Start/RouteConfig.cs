@@ -25,11 +25,11 @@ namespace TAiMStore
             );
 
             routes.MapRoute(null,
-                "Product/Id{Id}",
+                "Product/Detail/{Id}",
                 defaults: new
                 {
                     controller = "Product",
-                    action = "Product",
+                    action = "Detail",
                 }
             );
 
