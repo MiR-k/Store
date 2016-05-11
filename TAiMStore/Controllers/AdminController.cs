@@ -1,7 +1,7 @@
 ﻿using System.Web.Mvc;
 using System.Linq;
 using TAiMStore.Domain;
-using TAiMStore.Model.Abstract;
+using TAiMStore.Model.Repository;
 using System.Web;
 
 namespace TAiMStore.WebUI.Controllers
@@ -18,13 +18,12 @@ namespace TAiMStore.WebUI.Controllers
 
         public ViewResult Index()
         {
-            return View(_repository.Products);
+            return View(_repository.GetAll());
         }
 
         public ViewResult Edit(int Id)
         {
-            Product product = _repository.Products
-                .FirstOrDefault(p => p.Id == Id);
+            Product product = _repository.GetById(Id);
             return View(product);
         }
 
@@ -39,7 +38,7 @@ namespace TAiMStore.WebUI.Controllers
                     product.ImageData = new byte[image.ContentLength];
                     image.InputStream.Read(product.ImageData, 0, image.ContentLength);
                 }
-                _repository.SaveProduct(product);
+                _repository.Update(product);
                 TempData["message"] = string.Format("Изменения товара \"{0}\" сохранены", product.Name);
                 return RedirectToAction("Index");
             }
@@ -56,9 +55,10 @@ namespace TAiMStore.WebUI.Controllers
         }
 
         [HttpPost]
-        public ActionResult Delete(int Id)
+        public ActionResult Delete(int productId)
         {
-            Product deletedProduct = _repository.DeleteProduct(Id);
+            var deletedProduct = _repository.GetById(productId);
+            _repository.Delete(deletedProduct);
             if (deletedProduct != null)
             {
                 TempData["message"] = string.Format("Товар \"{0}\" удален",

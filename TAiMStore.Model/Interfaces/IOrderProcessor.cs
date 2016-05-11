@@ -1,6 +1,6 @@
 ﻿using TAiMStore.Model.ViewModels;
 
-namespace TAiMStore.Model.Abstract
+namespace TAiMStore.Model.Interfaces
 {
     public interface IOrderProcessor
     {

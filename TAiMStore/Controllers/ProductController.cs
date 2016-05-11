@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using TAiMStore.Domain;
 using TAiMStore.Model;
-using TAiMStore.Model.Abstract;
+using TAiMStore.Model.Repository;
 using TAiMStore.Model.ViewModels;
 
 namespace TAiMStore.Controllers
@@ -13,19 +13,20 @@ namespace TAiMStore.Controllers
     public class ProductController : Controller
     {
         // GET: Product
-        private IProductRepository _repository;
+        protected readonly IProductRepository _repository;
+        protected readonly ICategoryRepository _categoryRepository;
         public int pageSize = 4;
 
-        public ProductController(IProductRepository productRepository)
+        public ProductController(IProductRepository productRepository, ICategoryRepository categoryRepository)
         {
             _repository = productRepository;
+            _categoryRepository = categoryRepository;
+            _categoryRepository.GetAll();
         }
 
         public ViewResult List(string category, int page = 1)
         {
-            var products = _repository.Products
-                .Where(p => p.Category == null || p.Category.Name == category)
-                .ToList()
+            var products = _repository.GetMany(p => category == null || p.Category.Name == category)
                 .OrderBy(p => p.Id)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize);
@@ -46,8 +47,8 @@ namespace TAiMStore.Controllers
                     CurrentPage = page,
                     ItemsPerPage = pageSize,
                     TotalItems = category == null ?
-                    _repository.Products.Count():
-                    _repository.Products.Where(p => p.Category.Name == category).Count()
+                    _repository.GetCount():
+                    _repository.GetMany(p => p.Category.Name == category).Count()
                 },
                 CurrentCategory = category
             };
@@ -57,15 +58,13 @@ namespace TAiMStore.Controllers
         public ViewResult Detail(int Id)
         {
 
-            Product product = _repository.Products
-                .FirstOrDefault(p => p.Id == Id);
+            Product product = _repository.GetById(Id);
             return View(product);
         }
 
         public FileContentResult GetImage(int Id)
         {
-            Product product = _repository.Products
-                .FirstOrDefault(p => p.Id == Id);
+            Product product = _repository.GetById(Id);
 
             if (product != null)
             {

@@ -1,6 +1,4 @@
-﻿@model TAiMStore.Domain.Product
-
-<div class="well">
+﻿<div class="well">
     @if (Model.ImageData != null)
     {
         <div class="pull-left" style="margin-right: 10px">
@@ -11,12 +9,11 @@
     }
     <h3>
         <strong>@Model.Name</strong>
-        <span class="pull-right label label-primary">@Model.Price.ToString(",#. руб ## коп")</span>
+        <span class="pull-right label label-primary">@Model.Price.ToString("c")</span>
     </h3>
-    @using (Html.BeginForm("AddToCart", "Cart"))
+    @using (Html.BeginForm("AddToCart", "Cart", new { Model.Id }))
     {
         <div class="pull-right">
-            @Html.HiddenFor(x => x.Id)
             @Html.Hidden("returnUrl", Request.Url.PathAndQuery)
             <input type="submit" class="btn btn-success" value="Добавить в корзину" />
         </div>

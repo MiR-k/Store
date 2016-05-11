@@ -1,10 +1,11 @@
 ﻿using System.Net;
 using System.Net.Mail;
 using System.Text;
-using TAiMStore.Model.Abstract;
+using TAiMStore.Model.Interfaces;
+using TAiMStore.Model.Repository;
 using TAiMStore.Model.ViewModels;
 
-namespace TAiMStore.Model.Concrete
+namespace TAiMStore.Model.Classes
 {
     public class EmailSettings
     {
@@ -19,7 +20,7 @@ namespace TAiMStore.Model.Concrete
         public string FileLocation = @"d:\store_emails";
     }
 
-    public class EmailOrderProcessor : IOrderProcessor
+    public class EmailOrderProcessor : IOrderRepository
     {
         private EmailSettings emailSettings;
 

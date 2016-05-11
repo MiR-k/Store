@@ -33,7 +33,7 @@ namespace TAiMStore.Infrastructure
         private void AddBindings()
         {
             kernel.Bind<IProductRepository>().To<EFProductRepository>();
-
+            kernel.Bind<ICategoryRepository>().To<EFDCategoryRepository>();
             EmailSettings emailSettings = new EmailSettings
             {
                 WriteAsFile = bool.Parse(ConfigurationManager
@@ -44,6 +44,9 @@ namespace TAiMStore.Infrastructure
                 .WithConstructorArgument("settings", emailSettings);
 
             kernel.Bind<IAuthProvider>().To<FormAuthProvider>();
+
+           
         }
+
     }
 }

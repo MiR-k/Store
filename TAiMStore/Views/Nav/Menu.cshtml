@@ -7,14 +7,37 @@
 
 @foreach (var link in Model)
 {
-    @Html.RouteLink(link.Key.CategoryName, new
+    if (link.Value == 0)
     {
-        controller = "Product",
-        action = "List",
-        category = link,
-        page = 1
-    }, new
+        <div class="btn btn-block btn-default btn-lg"  style="box-shadow: black 1px 1px 1px 1px;">
+            @Html.RouteLink(link.Key.CategoryName, new
+         {
+             controller = "Product",
+             action = "List",
+             category = link.Key.CategoryName,
+             page = 1
+         },
+             new
+             {
+                 @class = link.Key.CategoryName == ViewBag.SelectedCategory ? "selected" : null
+             })
+        </div>
+    }
+    else
     {
-        @class = link.Key.CategoryName == ViewBag.SelectedCategory ? "selected" : null
-     })
+        <div class="btn btn-block btn-default btn-lg" style="box-shadow: black 1px 1px 1px 1px;">
+            @Html.RouteLink(link.Key.CategoryName, new
+         {
+             controller = "Product",
+             action = "List",
+             category = link.Key.CategoryName,
+             page = 1
+         },
+             new
+             {
+                 @class = link.Key.CategoryName == ViewBag.SelectedCategory ? "selected" : null
+             })
+        </div>
+        <div class="one thirds button yellow">-@link.Value.ToString()%</div>
+    }
 }

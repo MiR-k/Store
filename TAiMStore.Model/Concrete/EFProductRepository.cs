@@ -6,7 +6,7 @@ namespace TAiMStore.Model.Concrete
 {
     public class EFProductRepository : IProductRepository
     {
-        EFDbContext context = new EFDbContext();
+        StoreContext context = new StoreContext();
 
         public IEnumerable<Product> Products
         {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using TAiMStore.Model.Abstract;
+using TAiMStore.Model.Repository;
 using TAiMStore.Model.ViewModels;
 
 namespace TAiMStore.Controllers
@@ -23,7 +23,7 @@ namespace TAiMStore.Controllers
         public PartialViewResult Menu(string category = null)
         {
             ViewBag.SelectedCategory = category;
-            var categories = _categoryRepository.Categories.ToList();
+            var categories = _categoryRepository.GetAll();
             var categoryList = new Dictionary<CategoryViewModel, double>();
             foreach (var entity in categories)
             {
@@ -34,12 +34,5 @@ namespace TAiMStore.Controllers
             return PartialView(categoryList);
         }
     }
-    /**
-            IEnumerable<string> categories = _categoryRepository.Categories
-                .Select(p => p.Name)
-                .Distinct()
-                .OrderBy(x => x);
-            return PartialView(categories);
-**/
 }
 
