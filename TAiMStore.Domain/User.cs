@@ -11,7 +11,7 @@ namespace TAiMStore.Domain
 
         [Display(Name = "Логин")]
         [Required(ErrorMessage = "Пожалуйста, укажите логин")]
-        public string LoginName { get; set; }
+        public string Name { get; set; }
 
         [Required(ErrorMessage = "Пожалуйста, введите email")]
         [DataType(DataType.EmailAddress)]
