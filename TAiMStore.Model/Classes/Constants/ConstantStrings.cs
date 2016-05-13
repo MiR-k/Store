@@ -8,7 +8,9 @@ namespace TAiMStore.Model
 {
     public class ConstantStrings
     {
-        public const string AdministratorRole = "Administrator";
         public const string NameCompany = "ОАО ТАиМ";
+        public const string AdministratorRole = "Administrator";
+        public const string ModeratorRole = "Moderator";
+        public const string CustomerRole = "Customer";
     }
 }

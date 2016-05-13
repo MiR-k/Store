@@ -81,6 +81,8 @@
     <Compile Include="Abstract\IAuthProvider.cs" />
     <Compile Include="Abstract\IOrderProcessor.cs" />
     <Compile Include="Classes\Constants\ConstantStrings.cs" />
+    <Compile Include="Classes\Hash.cs" />
+    <Compile Include="Classes\UserManager.cs" />
     <Compile Include="Concrete\EmailOrderProcessor.cs" />
     <Compile Include="Concrete\FormAuthProvider.cs" />
     <Compile Include="Factory\Disposable.cs" />
@@ -124,6 +126,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ViewModels\ProductViewModel.cs" />
+    <Compile Include="ViewModels\ProfileViewModel.cs" />
     <Compile Include="ViewModels\ShippingDetails.cs" />
     <Compile Include="ViewModels\UserViewModel.cs">
       <SubType>Code</SubType>
