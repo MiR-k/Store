@@ -49,7 +49,7 @@ namespace TAiMStore.WebUI.Controllers
 
         public PartialViewResult Summary(Cart cart)
         {
-            return PartialView(cart);
+            return PartialView(GetCart());
         }
 
         public ViewResult Checkout()
