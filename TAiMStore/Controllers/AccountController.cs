@@ -36,6 +36,80 @@ namespace TAiMStore.Controllers
             _contactsRepository = contactsRepository;
             _unitOfWork = unitOfWork;
         }
+        # region method
+        //Авторизация
+        [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult Login(string userName, string password, bool rememberMe)
+        {
+            var model = new UserViewModel();
+            var manager = new UserManager(_userRepository, _roleRepository, _contactsRepository, _unitOfWork);
+            if (ValidateLogOn(userName, password))
+            {
+                FormsAuthentication.SetAuthCookie(userName, rememberMe);
+                var ticket = new FormsAuthenticationTicket(userName, true, 10);
+                var identity = new FormsIdentity(ticket);
+                HttpContext.User = new RolePrincipal(identity);
+                model = manager.GetUserViewModelByName(userName);
+                var IsAdmin = manager.UserIsInRole(userName, ConstantStrings.AdministratorRole);
+                if (IsAdmin) return RedirectToAction("Index", "Admin");
+                else return RedirectToAction("Product", "List");
+            }
+
+            return View("LoginNotSucces");
+        }
+
+        public bool ChangePassword(string userName, string oldPassword, string newPassword, string confirmPassword)
+        {
+            if (ValidateUser(userName, oldPassword))
+            {
+                var user = _userRepository.Get(u => u.Name == userName);
+                if (newPassword.Equals(confirmPassword))
+                {
+                    user.Password = HashHelper.HashPassword(newPassword);
+
+                    _userRepository.Update(user);
+                    _unitOfWork.Commit();
+
+                    return true;
+                }
+                else return false;
+            }
+            else return false;
+        }
+
+        private UserViewModel RegisterUser(string userName, string email, string pass)
+        {
+            var user = new User();
+            var userViewModel = new UserViewModel();
+            user.Name = userName;
+            user.Email = email;
+            user.Password = HashHelper.HashPassword(pass);
+            user.Role = _roleRepository.Get(r => r.Name == ConstantStrings.CustomerRole);
+            _userRepository.Add(user);
+            _unitOfWork.Commit();
+
+            userViewModel.Name = userName;
+            userViewModel.Email = email;
+
+            return userViewModel;
+        }
+
+
+        public ActionResult Captcha()
+        {
+            string code = new Random(DateTime.Now.Millisecond).Next(1111, 9999).ToString();
+            Session["code"] = code;
+            Captcha captcha = new Captcha(code, 110, 50);
+
+            this.Response.Clear();
+            this.Response.ContentType = "image/jpeg";
+
+            captcha.Image.Save(this.Response.OutputStream, ImageFormat.Jpeg);
+
+            captcha.Dispose();
+            return null;
+        }
+        #endregion
 
         #region  Registration
 
@@ -72,7 +146,30 @@ namespace TAiMStore.Controllers
         #endregion
 
         #region Validate
+        
+        //проверка при входе
+        private bool ValidateLogOn(string userName, string password)
+        {
+            var manager = new UserManager(_userRepository, _roleRepository, _contactsRepository, _unitOfWork);
+            if (String.IsNullOrEmpty(userName))
+            {
+                ModelState.AddModelError("username", "Вы должны ввести логин.");
+                return ModelState.IsValid;
+            }
+            if (String.IsNullOrEmpty(password))
+            {
+                ModelState.AddModelError("password", "Вы должны ввести пароль.");
+                return ModelState.IsValid;
+            }
+            if (!manager.ValidateUser(userName, password))
+            {
+                ModelState.AddModelError("_FORM", "Неправильный логин или пароль.");
+                return ModelState.IsValid;
+            }
 
+            return ModelState.IsValid;
+        }
+        
         private bool ValidateUserName(string userName)
         {
             var manager = new UserManager(_userRepository, _roleRepository, _contactsRepository, _unitOfWork);
@@ -167,61 +264,7 @@ namespace TAiMStore.Controllers
         }
         #endregion
 
-        # region method
-
-        public bool ChangePassword(string userName, string oldPassword, string newPassword, string confirmPassword)
-        {
-            if (ValidateUser(userName, oldPassword))
-            {
-                var user = _userRepository.Get(u => u.Name == userName);
-                if (newPassword.Equals(confirmPassword))
-                {
-                    user.Password = HashHelper.HashPassword(newPassword);
-
-                    _userRepository.Update(user);
-                    _unitOfWork.Commit();
-
-                    return true;
-                }
-                else return false;
-            }
-            else return false;
-        }
-
-        private UserViewModel RegisterUser(string userName, string email, string pass)
-        {
-            var user = new User();
-            var userViewModel = new UserViewModel();
-            user.Name = userName;
-            user.Email = email;
-            user.Password = HashHelper.HashPassword(pass);
-            user.Role = _roleRepository.Get(r => r.Name == ConstantStrings.CustomerRole);
-            _userRepository.Add(user);
-            _unitOfWork.Commit();
-
-            userViewModel.Name = userName;
-            userViewModel.Email = email;
-
-            return userViewModel;
-        }
-
-
-        public ActionResult Captcha()
-        {
-            string code = new Random(DateTime.Now.Millisecond).Next(1111, 9999).ToString();
-            Session["code"] = code;
-            Captcha captcha = new Captcha(code, 110, 50);
-
-            this.Response.Clear();
-            this.Response.ContentType = "image/jpeg";
-
-            captcha.Image.Save(this.Response.OutputStream, ImageFormat.Jpeg);
-
-            captcha.Dispose();
-            return null;
-        }
-        #endregion
-
+       
         # region Old
         IAuthProvider authProvider;
         public AccountController(IAuthProvider auth)
