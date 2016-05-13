@@ -9,9 +9,9 @@
     }
     <h3>
         <strong>@Model.Name</strong>
-        <span class="pull-right label label-primary">@Model.Price.ToString("c")</span>
+        <span class="pull-right label label-primary">@Model.Price.ToString(",#. руб ## коп")</span>
     </h3>
-    @using (Html.BeginForm("AddToCart", "Cart", new { Model.Id }))
+    @using (Html.BeginForm("AddToCart", "Cart"))
     {
         <div class="pull-right">
             @Html.Hidden("returnUrl", Request.Url.PathAndQuery)

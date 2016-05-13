@@ -1,55 +1,35 @@
-﻿@model Store.Model.ViewModels.CartIndexViewModel
+﻿@model TAiMStore.Model.ViewModels.ShippingDetails
 
 @{
-    ViewBag.Title = "Sports Store : Your Cart";
+    ViewBag.Title = "Форма предватрительного заказа";
 }
 
-<h2>Ваша корзина</h2>
-<table width="90%" align="center">
-    <thead>
-        <tr>
-            <th align="center">Quantity</th>
-            <th align="left">Item</th>
-            <th align="right">Price</th>
-            <th align="right">Subtotal</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var line in Model.Cart.Lines)
+<h2>Оформить заказ сейчас</h2>
+<p>Пожалуйста введи ваши контактные данные, и мы сразу отправим товар!</p>
+
+
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary();
+    <h3>Данные</h3>
+    <div class="form-group">
+        <label>Ваше имя:</label>
+        @Html.TextBoxFor(x => x.Name, new { @class = "form-control" })
+    </div>
+
+    <h3>Адрес доставки</h3>
+    foreach (var property in ViewData.ModelMetadata.Properties)
+    {
+        if (property.PropertyName != "Name" && property.PropertyName != "GiftWrap")
         {
-            <tr>
-                <td align="center">@line.Quantity</td>
-                <td align="left">@line.Product.Name</td>
-                <td align="right">@line.Product.Price.ToString("c")</td>
-                <td align="right">
-                    @((line.Quantity
-                                     * line.Product.Price).ToString("c"))
-            </td>
-            <td>
-                @* @using (Html.BeginForm("RemoveFromCart", "Cart"))
-                    {
-                        @Html.Hidden("ProductId", line.Product.ProductID)
-                        @Html.HiddenFor(x => x.ReturnUrl)
-                        <input class="actionButtons" type="submit"
-                            value="Remove" />
-                    }*@
-            </td>
-        </tr>
+            <div class="form-group">
+                <label>@(property.DisplayName ?? property.PropertyName)</label>
+                @Html.TextBox(property.PropertyName, null, new { @class = "form-control" })
+            </div>
         }
-    </tbody>
-    <tfoot>
-        <tr>
-            <td colspan="3" align="right">Total:</td>
-            <td align="right">
-                @Model.Cart.ComputeTotalValue().ToString("c")
-            </td>
-        </tr>
-    </tfoot>
-</table>
-<p align="center" class="actionButtons">
-    <a href="@Model.ReturnUrl">Continue shopping</a>
-</p>
-<p align="center" class="actionButtons">
-    <a href="@Model.ReturnUrl">Continue shopping</a>
-    @*@Html.ActionLink("Checkout now", "Checkout")*@
-</p>
+    }
+
+    <div class="text-center">
+        <input class="btn btn-primary" type="submit" value="Обработать заказ" />
+    </div>
+}

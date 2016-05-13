@@ -14,7 +14,7 @@ namespace TAiMStore.Controllers
         protected readonly IProductRepository _productRepository;
         protected readonly ICategoryRepository _categoryRepository;
 
-        public NavController(IProductRepository productRepository,ICategoryRepository categoryRepository)
+        public NavController(IProductRepository productRepository, ICategoryRepository categoryRepository)
         {
             _productRepository = productRepository;
             _categoryRepository = categoryRepository;
@@ -34,5 +34,12 @@ namespace TAiMStore.Controllers
             return PartialView(categoryList);
         }
     }
+    /**
+            IEnumerable<string> categories = _categoryRepository.Categories
+                .Select(p => p.Name)
+                .Distinct()
+                .OrderBy(x => x);
+            return PartialView(categories);
+**/
 }
 

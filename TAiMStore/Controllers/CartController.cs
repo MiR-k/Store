@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
-using TAiMStore.Model.Interfaces;
+using TAiMStore.Domain;
+using TAiMStore.Model.Abstract;
 using TAiMStore.Model.Repository;
 using TAiMStore.Model.ViewModels;
 
@@ -8,18 +9,16 @@ namespace TAiMStore.WebUI.Controllers
 {
     public class CartController : Controller
     {
-        //
-        // GET: /Cart/
-        private IProductRepository _productRepository;
-        private IOrderRepository _orderRepository;
+        private IProductRepository _repository;
+        private IOrderProcessor _orderProcessor;
 
-        public CartController(IProductRepository repo, IOrderRepository orderRepository)
+        public CartController(IProductRepository productRepository, IOrderProcessor orderProcessor)
         {
-            _productRepository = repo;
-            _orderRepository = orderRepository;
+            _orderProcessor = orderProcessor;
+            _repository = productRepository;
         }
 
-        public ViewResult Index(Cart cart, string returnUrl)
+        public ViewResult Index(Cart cart,string returnUrl)
         {
             return View(new CartIndexViewModel
             {
@@ -28,9 +27,9 @@ namespace TAiMStore.WebUI.Controllers
             });
         }
 
-        public RedirectToRouteResult AddToCart(Cart cart, int Id, string returnUrl)
+        public RedirectToRouteResult AddToCart(Cart cart,int Id, string returnUrl)
         {
-            var product = _productRepository.GetById(Id);
+            Product product = _repository.GetById(Id);
 
             if (product != null)
             {
@@ -39,12 +38,14 @@ namespace TAiMStore.WebUI.Controllers
             return RedirectToAction("Index", new { returnUrl });
         }
 
-        public RedirectToRouteResult RemoveFromCart(Cart cart, int Id, string returnUrl)
+        public RedirectToRouteResult RemoveFromCart(Cart cart,int Id, string returnUrl)
         {
-            var product = _productRepository.GetById(Id);
+            Product product = _repository.GetById(Id);
 
-            if (product != null) cart.RemoveLine(product);
-
+            if (product != null)
+            {
+                cart.RemoveLine(product);
+            }
             return RedirectToAction("Index", new { returnUrl });
         }
 
@@ -53,7 +54,7 @@ namespace TAiMStore.WebUI.Controllers
             return PartialView(cart);
         }
 
-        public ViewResult CheckOut()
+        public ViewResult Checkout()
         {
             return View(new ShippingDetails());
         }
@@ -63,11 +64,12 @@ namespace TAiMStore.WebUI.Controllers
         {
             if (cart.Lines.Count() == 0)
             {
-                ModelState.AddModelError("", "Sorry, your cart is empty!");
+                ModelState.AddModelError("", "Извините, ваша корзина пуста!");
             }
+
             if (ModelState.IsValid)
             {
-                _orderRepository.ProcessOrder(cart, shippingDetails);
+                _orderProcessor.ProcessOrder(cart, shippingDetails);
                 cart.Clear();
                 return View("Completed");
             }

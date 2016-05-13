@@ -13,8 +13,8 @@ namespace TAiMStore.Controllers
     public class ProductController : Controller
     {
         // GET: Product
-        protected readonly IProductRepository _repository;
-        protected readonly ICategoryRepository _categoryRepository;
+        private readonly IProductRepository _repository;
+        private readonly ICategoryRepository _categoryRepository;
         public int pageSize = 4;
 
         public ProductController(IProductRepository productRepository, ICategoryRepository categoryRepository)

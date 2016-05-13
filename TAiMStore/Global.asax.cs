@@ -16,7 +16,6 @@ namespace TAiMStore
         {
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
-            //ModelBinders.Binders.Add(typeof(Cart), new CartModelBinder());
             DependencyResolver.SetResolver(AutofacConfiguration.GetAutofacDependencyResolver());
         }
     }

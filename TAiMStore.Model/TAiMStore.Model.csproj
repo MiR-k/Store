@@ -79,13 +79,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Abstract\IAuthProvider.cs" />
-    <Compile Include="Interfaces\IOrderProcessor.cs" />
+    <Compile Include="Abstract\IOrderProcessor.cs" />
     <Compile Include="Classes\Constants\ConstantStrings.cs" />
-    <Compile Include="Classes\EmailOrderProcessor.cs" />
+    <Compile Include="Concrete\EmailOrderProcessor.cs" />
     <Compile Include="Concrete\FormAuthProvider.cs" />
     <Compile Include="Factory\Disposable.cs" />
     <Compile Include="Factory\Factory.cs" />
     <Compile Include="Factory\IFactory.cs" />
+    <Compile Include="Interfaces\IOrderProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\CategoryRepository.cs" />
     <Compile Include="Repository\ContactsRepository.cs" />
@@ -143,7 +144,6 @@
       <Name>TAiMStore.Entities</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

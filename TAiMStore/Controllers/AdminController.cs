@@ -11,6 +11,7 @@ namespace TAiMStore.WebUI.Controllers
     {
         IProductRepository _repository;
 
+
         public AdminController(IProductRepository productRepository)
         {
             _repository = productRepository;
@@ -55,9 +56,9 @@ namespace TAiMStore.WebUI.Controllers
         }
 
         [HttpPost]
-        public ActionResult Delete(int productId)
+        public ActionResult Delete(int Id)
         {
-            var deletedProduct = _repository.GetById(productId);
+            Product deletedProduct = _repository.GetById(Id);
             _repository.Delete(deletedProduct);
             if (deletedProduct != null)
             {
