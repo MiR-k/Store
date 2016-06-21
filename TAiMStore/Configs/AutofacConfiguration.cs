@@ -4,8 +4,6 @@ using Autofac.Integration.Mvc;
 using TAiMStore.Model.Factory;
 using TAiMStore.Model.Repository;
 using TAiMStore.Model.UnitOfWork;
-using TAiMStore.Model.Interfaces;
-using TAiMStore.WebUI.Infrastructure.Binders;
 using System.Web.ModelBinding;
 
 namespace TAiMStore.Configs
@@ -20,7 +18,6 @@ namespace TAiMStore.Configs
             builder.RegisterType<Factory>().As<IFactory>().InstancePerHttpRequest();
             builder.RegisterType<UnitOfWork>().As<IUnitOfWork>().InstancePerHttpRequest();
 
-            builder.RegisterType<CartModelBinder>();
 
             builder.RegisterAssemblyTypes(typeof(ProductRepository).Assembly)
                   .Where(t => t.Name.EndsWith(repository))

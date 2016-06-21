@@ -1,85 +1,88 @@
-﻿@model TAiMStore.Domain.Product
+﻿@model TAiMStore.Model.ViewModels.MasterPageModel
 
 @{
-    ViewBag.Title = "Админ панель: редактирование товара";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
-}
-
-@{
+    Layout = "~/Views/Shared/_LayoutForMessage.cshtml";
     if (Model != null)
     {
-        <h1>Редактирование «@Model.Name»</h1>
+        ViewBag.Title = "Администратор: Редактирование " + @Model.ProductView.Name;
     }
-    else
-    {
-        <h1>Добавление нового товара</h1>
-    }
+    else { ViewBag.Title = "Администратор: Добавление"; }
 }
-    @using (Html.BeginForm("Edit", "Admin",
-        FormMethod.Post, new { enctype = "multipart/form-data" }))
-    {
-        <div class="panel-body">
-            @Html.HiddenFor(m => m.Id)
-            @foreach (var property in ViewData.ModelMetadata.Properties)
+<div class="panel">
+    <div class="panel-heading">
+        @{
+            if (Model.ProductView.Id != 0)
             {
-                switch (property.PropertyName)
-                {
-                    case "Id":
-                    case "ImageMimeType":
-                    case "ImageData":
-                    case "OrderProducts":
-                    case "CreateDate":
-                    case "ModifiedDate":
-                        break;
-                    default:
-                        <div class="form-group">
-                            <label>@(property.DisplayName ?? property.PropertyName)</label>
-                            @if (property.PropertyName == "Description" || property.PropertyName == "DescriptionSecond")
-                            {
-                                @Html.TextArea(property.PropertyName, null,
-                                    new { @class = "form-control", rows = 5 })
-                            }
-                            else
-                            {
-                                @Html.TextBox(property.PropertyName, null,
-                                    new { @class = "form-control" })
-                            }
-                            @Html.ValidationMessage(property.PropertyName)
-                        </div>
-                            break;
-                }
+                <h3>Редактирование @Model.ProductView.Name</h3>
             }
-            <div class="form-group">
-                <div style="position:relative;">
-                    <label>Картинка</label>
-                    <a class='btn' href='javascript:;'>
-                        Выберите файл...
-                        <input type="file" name="Image" size="40"
-                               style="position:absolute;z-index:2;top:0;
-                                left:0;filter: alpha(opacity=0); opacity:0;
-                                background-color:transparent;color:transparent;"
-                               onchange='$("#upload-file-info").html($(this).val());'>
-                    </a>
-                    <span class='label label-info' id="upload-file-info"></span>
-                </div>
-                @if (Model.ImageData == null)
-                {
-                    <div class="form-control-static">Нет картинки</div>
-                }
-                else
-                {
-                    <img class="img-thumbnail" width="150" height="150"
-                         src="@Url.Action("GetImage", "Product",
-                        new { Model.Id })" />
-                }
-            </div>
-        </div>
-        <div class="panel-footer">
-            <input type="submit" value="Сохранить" class="btn btn-primary" />
-            @Html.ActionLink("Отменить изменения и вернуться к списку", "Index", null, new
+            else
             {
-                @class = "btn btn-default"
-            })
-        </div>
+                <h3>Добавление нового товара</h3>
+            }
+        }
+    </div>
+
+    @using (Html.BeginForm("Edit", "Admin", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.Hidden("Id", Model.ProductView.Id)
+        <div class="panel-body">
+            <table width="500">
+                <tr>
+                    <td>
+                        <label>Товар</label>
+                        @Html.TextBox("name", Model.ProductView.Name, new { @class = "form-control" })
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Описание</label>
+                        @Html.TextArea("desc", Model.ProductView.Description, new { @class = "form-control" })
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Полное описание</label>
+                        @Html.TextArea("descSec", Model.ProductView.DescriptionSecond, new { @class = "form-control", rows = 5 })
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Цена</label>
+                        @Html.TextBox("price", Model.ProductView.Price, new { @class = "form-control" })
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Категория</label>
+                        @Html.DropDownList("cat", Model.CategoriesForDropDown, new { @class = "form-control" })
+                    </td>
+                 </tr>
+                <tr>
+                    <td>
+                        <label>Изображение</label>
+                        @if (Model == null || Model.ProductView.ImageData == null)
+                        {
+                            @:None
+                        }
+                        else
+                        {
+                            <img width="150" height="150" src="@Url.Action("GetImage", "Product", new {Model.ProductView.Id})" />
+                        }
+                        <div>Загрузить новое изображение: <input type="file" name="Image" /></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="panel-footer">
+                            <input type="submit" value="Сохранить" class="btn btn-success" />
+                            @Html.ActionLink("Отменить изменения и вернуться к списку", "Index", null, new
+                            {
+                                @class = "btn btn-warning"
+                            })
+                        </div>
+                    </td>
+                </tr>
+            </table>     
+         </div>
     }
 </div>

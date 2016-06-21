@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 using TAiMStore.Domain;
+using TAiMStore.Model.Repository;
+using TAiMStore.Model.UnitOfWork;
 
 namespace TAiMStore.Model.ViewModels
 {
@@ -35,6 +37,42 @@ namespace TAiMStore.Model.ViewModels
 
         [HiddenInput(DisplayValue = false)]
         public DateTime CreateDate { get; set; }
+
+        public void ProductViewModelToProductEntity(Product product)
+        {
+            product.Id = this.Id;
+            product.Name = this.Name;
+            product.ImageData = this.ImageData;
+            product.ImageMimeType = this.ImageMimeType;
+            product.Description = this.Description;
+            product.DescriptionSecond = this.DescriptionSecond;
+            product.Price = this.Price;
+        }
+
+        public void ProductViewModelToEntity(Product product, ICategoryRepository categoryRepository, IUnitOfWork unitOfWork)
+        {
+            product.Id = this.Id;
+            product.Name = this.Name;
+            product.ImageData = this.ImageData;
+            product.ImageMimeType = this.ImageMimeType;
+            product.Description = this.Description;
+            product.DescriptionSecond = this.DescriptionSecond;
+            product.Price = this.Price;
+                        
+            unitOfWork.Commit();
+
+            var category = categoryRepository.Get(c => c.Name == this.Category);
+            if (category != null) product.Category = category;
+            else
+            {
+                var newCategory = new Category();
+                newCategory.Name = this.Category;
+
+                categoryRepository.Add(newCategory);
+                unitOfWork.Commit();
+                product.Category = newCategory;
+            }
+        }
 
         public void EntityToProductViewModel(Product product)
         {

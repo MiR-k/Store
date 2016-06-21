@@ -1,21 +1,21 @@
-﻿@using TAiMStore.Model.ViewModels;
-@using TAiMStore.HtmlHelpers;
-@model ProductsViewModel
+﻿@using TAiMStore.HtmlHelpers;
+@using TAiMStore.Model.ViewModels;
+@model MasterPageModel
 
 @{
     ViewBag.Title = "Товары";
 }
 
-@foreach (var p in @Model.Products)
+@foreach (var product in Model.ProductsViewModel.Products)
 {
-    @Html.Partial("ProductSummary",p)
+    @Html.Partial("ProductSummary",product)
 }
 
 <center>
 <div>Cтраницы </div>
             <div class="btn-group pull-left">
-                @Html.PageLinks(Model.PagingInfo, x => Url.Action("List",
-                    new { page = x, category = Model.CurrentCategory }))
+                @Html.PageLinks(Model.ProductsViewModel.PagingInfo, x => Url.Action("List",
+                             new { page = x, category = Model.ProductsViewModel.CurrentCategory }))
             </div>
 </center>
 

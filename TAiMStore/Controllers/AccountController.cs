@@ -8,7 +8,6 @@ using System.Web.Security;
 using TAiMStore.Domain;
 using TAiMStore.HtmlHelpers;
 using TAiMStore.Model;
-using TAiMStore.Model.Abstract;
 using TAiMStore.Model.Classes;
 using TAiMStore.Model.Repository;
 using TAiMStore.Model.UnitOfWork;
@@ -36,12 +35,55 @@ namespace TAiMStore.Controllers
             _contactsRepository = contactsRepository;
             _unitOfWork = unitOfWork;
         }
-        # region method
-        //Авторизация
+
+        #region ViewResults
+
+        /// <summary>
+        /// Показать представление для регистрации
+        /// </summary>
+        /// <returns>Представление для регистрации</returns>
+        [AcceptVerbs(HttpVerbs.Get)]
+        public ActionResult Register()
+        {
+            return View(new MasterPageModel());
+        }
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult Register(string userName, string email, string password, string confirmPassword, string myCaptcha, string attempt)
+        {
+            var masterModel = new MasterPageModel();
+            var manager = new UserManager(_userRepository, _roleRepository, _contactsRepository, _unitOfWork);
+            if (ValidateRegistration(userName, email, password, confirmPassword, HttpContext, myCaptcha, attempt))
+            {
+                // Создание пользователя
+                UserViewModel user;
+
+                user = manager.RegisterUser(userName, email, password);
+
+                // Вход
+                FormsAuthentication.SetAuthCookie(userName, false);
+                var ticket = new FormsAuthenticationTicket(userName, true, 10);
+                var identity = new FormsIdentity(ticket);
+                HttpContext.User = new RolePrincipal(identity);
+                masterModel.UserModel = user;
+                masterModel.UserRole = ConstantStrings.CustomerRole;
+                return View("RegisterSuccess", masterModel);
+            }
+
+            // If we got this far, something failed, redisplay form
+            masterModel.UserModel = new UserViewModel();
+            return View(masterModel);
+        }
+
+        public ActionResult Login()
+        {
+            return RedirectToAction("Index", "Home");
+        }
+
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult Login(string userName, string password, bool rememberMe)
         {
-            var model = new UserViewModel();
+            var model = new MasterPageModel();
             var manager = new UserManager(_userRepository, _roleRepository, _contactsRepository, _unitOfWork);
             if (ValidateLogOn(userName, password))
             {
@@ -49,105 +91,165 @@ namespace TAiMStore.Controllers
                 var ticket = new FormsAuthenticationTicket(userName, true, 10);
                 var identity = new FormsIdentity(ticket);
                 HttpContext.User = new RolePrincipal(identity);
-                model = manager.GetUserViewModelByName(userName);
+                model.UserModel = manager.GetUserViewModelByName(userName);
                 var IsAdmin = manager.UserIsInRole(userName, ConstantStrings.AdministratorRole);
                 if (IsAdmin) return RedirectToAction("Index", "Admin");
-                else return RedirectToAction("Product", "List");
+                else return View("LoginSucces");
             }
 
             return View("LoginNotSucces");
         }
 
-        public bool ChangePassword(string userName, string oldPassword, string newPassword, string confirmPassword)
+        /// <summary>
+        /// Выход
+        /// </summary>
+        /// <returns>Представление главной страницы</returns>
+        public ActionResult LogOff()
         {
-            if (ValidateUser(userName, oldPassword))
+            FormsAuthentication.SignOut();
+
+            return RedirectToAction("List", "Product");
+        }
+
+        [AcceptVerbs(HttpVerbs.Get)]
+        public ActionResult ChangePassword()
+        {
+            var model = new MasterPageModel();
+            var userManager = new UserManager(_userRepository, _roleRepository, _contactsRepository, _unitOfWork);
+            InitializeUsersRoles(model, userManager);
+
+            return View(model);
+        }
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult ChangePassword(string password, string newPassword, string confirmPassword)
+        {
+            var model = new MasterPageModel();
+            var userManager = new UserManager(_userRepository, _roleRepository, _contactsRepository, _unitOfWork);
+            InitializeUsersRoles(model, userManager);
+
+            var userName = HttpContext.User.Identity.Name;
+            if (userManager.ChangePassword(userName, password, newPassword, confirmPassword))
             {
-                var user = _userRepository.Get(u => u.Name == userName);
-                if (newPassword.Equals(confirmPassword))
-                {
-                    user.Password = HashHelper.HashPassword(newPassword);
-
-                    _userRepository.Update(user);
-                    _unitOfWork.Commit();
-
-                    return true;
-                }
-                else return false;
+                return View("PasswordChanged", model);
             }
-            else return false;
+            else return View("PasswordNotChanged", model);
         }
 
-        private UserViewModel RegisterUser(string userName, string email, string pass)
+        public ActionResult Profile()
         {
-            var user = new User();
-            var userViewModel = new UserViewModel();
-            user.Name = userName;
-            user.Email = email;
-            user.Password = HashHelper.HashPassword(pass);
-            user.Role = _roleRepository.Get(r => r.Name == ConstantStrings.CustomerRole);
-            _userRepository.Add(user);
-            _unitOfWork.Commit();
+            var model = new MasterPageModel();
+            var userManager = new UserManager(_userRepository, _roleRepository, _contactsRepository, _unitOfWork);
+            InitializeUsersRoles(model, userManager);
 
-            userViewModel.Name = userName;
-            userViewModel.Email = email;
+            model.ProfileView = userManager.GetProfileViewModelByName(model.UserModel.Name);
 
-            return userViewModel;
+            return View(model);
         }
 
-
-        public ActionResult Captcha()
+        [AcceptVerbs(HttpVerbs.Get)]
+        public ActionResult ProfileAdd()
         {
-            string code = new Random(DateTime.Now.Millisecond).Next(1111, 9999).ToString();
-            Session["code"] = code;
-            Captcha captcha = new Captcha(code, 110, 50);
+            var model = new MasterPageModel();
+            var userManager = new UserManager(_userRepository, _roleRepository, _contactsRepository, _unitOfWork);
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                var user = userManager.GetUserViewModelByName(HttpContext.User.Identity.Name);
+                var userRole = string.Empty;
+                if (userManager.UserIsInRole(user.Name, ConstantStrings.AdministratorRole) ||
+                    userManager.UserIsInRole(user.Name, ConstantStrings.ModeratorRole))
+                    userRole = ConstantStrings.AdministratorRole;
+                else userRole = ConstantStrings.CustomerRole;
+                model.UserModel = user;
+                model.UserRole = userRole;
+            }
+            if (!IsEdit)
+            {
+                return View(new ProfileViewModel());
+            }
+            else
+            {
+                var profileView = userManager.GetProfileViewModelByName(model.UserModel.Name);
+                return View(profileView);
+            }
+        }
 
-            this.Response.Clear();
-            this.Response.ContentType = "image/jpeg";
+        [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult ProfileAdd(string fullName, string organization, string city, string street, string house, string room, string telephone, string postZip)
+        {
+            var model = new MasterPageModel();
+            var userManager = new UserManager(_userRepository, _roleRepository, _contactsRepository, _unitOfWork);
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                var user = userManager.GetUserViewModelByName(HttpContext.User.Identity.Name);
+                var userRole = string.Empty;
+                if (userManager.UserIsInRole(user.Name, ConstantStrings.AdministratorRole) ||
+                    userManager.UserIsInRole(user.Name, ConstantStrings.ModeratorRole))
+                    userRole = ConstantStrings.AdministratorRole;
+                else userRole = ConstantStrings.CustomerRole;
+                model.UserModel = user;
+                model.UserRole = userRole;
+            }
 
-            captcha.Image.Save(this.Response.OutputStream, ImageFormat.Jpeg);
+            var profileView = new ProfileViewModel
+            {
+                PersonFullName = fullName,
+                Organization = organization,
+                City = city,
+                Street = street,
+                Email = model.UserModel.Email,
+                House = house,
+                PostZip = postZip,
+                Room = room,
+                Telephone = telephone
+            };
 
-            captcha.Dispose();
+            if (!IsEdit)
+            {
+                userManager.ContactsAdd(model.UserModel.Name, profileView);
+            }
+            else
+            {
+                userManager.ContactsEdit(model.UserModel.Name, profileView);
+            }
+            model.ProfileView = profileView;
+
+            return View("Profile", model);
+        }
+
+        public ActionResult ProfileEdit()
+        {
+            IsEdit = true;
+            return RedirectToAction("ProfileAdd");
+        }
+
+        #endregion
+
+        #region Registration
+
+        /// <summary>
+        /// Проверка на занятость логина
+        /// </summary>
+        /// <param name="userName">Логин</param>
+        /// <returns>Результат</returns>
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult UserExists(string userName)
+        {
+            if (Request.IsAjaxRequest())
+            {
+                return new JsonResult { Data = !ValidateUserName(userName), JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+            }
             return null;
         }
         #endregion
 
-        #region  Registration
-
-        public ActionResult Register()
-        {
-            return View(new UserViewModel());
-        }
-
-
-        [AcceptVerbs(HttpVerbs.Post)]
-        public ActionResult Register(UserViewModel user, string userName, string email, string password, string confirmPassword)
-        {
-
-            if (user.Captcha != (string)Session["code"])
-            {
-                ModelState.AddModelError("Captcha", "Текст с картинки введен неверно");
-            }
-            else
-            {
-                var manager = new UserManager(_userRepository, _roleRepository, _contactsRepository, _unitOfWork);
-                if (ValidateRegistration(userName, email, password, confirmPassword))
-                {
-                    // Создание пользователя
-                    user = manager.RegisterUser(userName, email, password);
-
-                    // Вход
-
-                    return View("RegisterSuccess", user);
-                }
-            }           
-            return View(user);
-        }
-
-        #endregion
-
-        #region Validate
-        
-        //проверка при входе
+        #region Validation
+        /// <summary>
+        /// Валидация при входе
+        /// </summary>
+        /// <param name="userName">Логин</param>
+        /// <param name="password">Пароль</param>
+        /// <returns>Результат валидации</returns>
         private bool ValidateLogOn(string userName, string password)
         {
             var manager = new UserManager(_userRepository, _roleRepository, _contactsRepository, _unitOfWork);
@@ -169,7 +271,11 @@ namespace TAiMStore.Controllers
 
             return ModelState.IsValid;
         }
-        
+        /// <summary>
+        /// Валидация при указании нового логина OpenID пользователем
+        /// </summary>
+        /// <param name="userName">Логин</param>
+        /// <returns>Результат валидации</returns>
         private bool ValidateUserName(string userName)
         {
             var manager = new UserManager(_userRepository, _roleRepository, _contactsRepository, _unitOfWork);
@@ -197,16 +303,28 @@ namespace TAiMStore.Controllers
                     return ModelState.IsValid;
                 }
 
-                if (userName.Length < 4)
+                if (userName.Length < 3)
                 {
-                    ModelState.AddModelError("_Form", "Логин должен быть не менее 4 символов.");
+                    ModelState.AddModelError("_Form", "Логин должен быть не менее 3 символов.");
                     return ModelState.IsValid;
                 }
             }
             return ModelState.IsValid;
         }
 
-        private bool ValidateRegistration(string userName, string email, string password, string confirmPassword)
+        /// <summary>
+        /// Валидация при регистрации
+        /// </summary>
+        /// <param name="userName">Логин</param>
+        /// <param name="email">E-Mail</param>
+        /// <param name="password">Пароль</param>
+        /// <param name="confirmPassword">Подтверждение пароля</param>
+        /// <param name="context">Контекст (для captcha)</param>
+        /// <param name="captcha">Идентификатор ответа на captcha</param>
+        /// <param name="attempt">Ответ на captcha</param>
+        /// <returns>Результат валидации</returns>
+        private bool ValidateRegistration(string userName, string email, string password, string confirmPassword,
+            HttpContextBase context, string captcha, string attempt)
         {
             var manager = new UserManager(_userRepository, _roleRepository, _contactsRepository, _unitOfWork);
             if (!ValidateUserName(userName))
@@ -214,15 +332,20 @@ namespace TAiMStore.Controllers
                 ModelState.AddModelError("userName", "Некорректный логин");
             }
 
-           if (string.IsNullOrEmpty(email))
+            if (!Captcha.VerifyAndExpireSolution(context, captcha, attempt))
+            {
+                ModelState.AddModelError("captcha", "Неверно введены символы");
+            }
+
+            if (string.IsNullOrEmpty(email))
             {
                 ModelState.AddModelError("email", "Введите E-Mail.");
             }
             else
             {
-                if (email.Length > 30)
+                if (email.Length > 20)
                 {
-                    ModelState.AddModelError("email", "E-Mail должен содержать не более 30 символов.");
+                    ModelState.AddModelError("email", "E-Mail должен содержать не более 20 символов.");
                 }
                 if (!Regex.IsMatch(email, @"^([0-9a-zA-Z]([-\.\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$"))
                 {
@@ -249,55 +372,32 @@ namespace TAiMStore.Controllers
             return ModelState.IsValid;
         }
 
-        public bool ValidateUser(string userName, string password)
+        public PartialViewResult UserMenu()
         {
-            var user = _userRepository.Get(u => u.Name == userName);
-            if (user == null) return false;
-            else
-            {
-                if (user.Password != HashHelper.HashPassword(password))
-                {
-                    return false;
-                }
-                else return true;
-            }
+            var userName = HttpContext.User.Identity.Name;
+            var masterModel = new MasterPageModel();
+
+            return PartialView(masterModel);
         }
+
         #endregion
 
-       
-        # region Old
-        IAuthProvider authProvider;
-        public AccountController(IAuthProvider auth)
+        #region Initilaze
+        private void InitializeUsersRoles(MasterPageModel masterViewModel, UserManager manager)
         {
-            authProvider = auth;
-        }
+            masterViewModel.Users = manager.GetUsers();
 
-        public ViewResult Login()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public ActionResult Login(LoginViewModel model, string returnUrl)
-        {
-
-            if (ModelState.IsValid)
+            var userManager = new UserManager(_userRepository, _roleRepository, _contactsRepository, _unitOfWork);
+            if (HttpContext.User.Identity.IsAuthenticated)
             {
-                if (authProvider.Authenticate(model.UserName, model.Password))
-                {
-                    return Redirect(returnUrl ?? Url.Action("Index", "Admin"));
-                }
-                else
-                {
-                    ModelState.AddModelError("", "Неправильный логин или пароль");
-                    return View();
-                }
+                var user = userManager.GetUserViewModelByName(HttpContext.User.Identity.Name);
+                var userRole = string.Empty;
+                if (userManager.UserIsInRole(user.Name, ConstantStrings.AdministratorRole) ||
+                    userManager.UserIsInRole(user.Name, ConstantStrings.ModeratorRole))
+                    userRole = ConstantStrings.AdministratorRole;
+                masterViewModel.UserModel = user;
+                masterViewModel.UserRole = userRole;
             }
-            else
-            {
-                return View();
-            }
-      
         }
         #endregion
     }

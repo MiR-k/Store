@@ -8,13 +8,9 @@ namespace TAiMStore.Domain
     {
         [HiddenInput(DisplayValue = false)]
         public int Id { get; set; }
-
-        [Display(Name = "Количество товара")]
-        [Required]
-        [Range(0, int.MaxValue, ErrorMessage = "Пожалуйста, введите положительное количество товаров")]
         public int Quantity { get; set; }
 
-        public Product Product { get; set; }
-        public Order Order { get; set; }
+        public virtual Product Product { get; set; }
+        public virtual Order Order { get; set; }
     }
 }
