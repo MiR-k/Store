@@ -1,0 +1,47 @@
+﻿@using System.Web.UI.WebControls
+@using System.Web.Security
+@using TAiMStore.Model
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="~/Content/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap-theme.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <title>@ViewBag.Title</title>
+</head>
+<body>
+    <header>
+        <div class="navbar navbar-inverse" role="navigation">
+            <a class="navbar-brand" href="#">Интернет-магазин @ConstantStrings.NameCompany</a>
+        </div>
+    </header>
+    <nav class="navbar navbar-default" role="navigation">
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav nav-tabs">
+                <li class="active">@Html.ActionLink("Главная", "List", "Product") </li>
+                <li>@Html.ActionLink("Регистрация", "Register", "Account") </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="row panel">
+        <div class="row panel">
+            <div class="col-sm-3 col-md-3 sidebar">
+                <ul title="Меню" role="menu">
+                    <ul title="category" id="categories" class="nav nav-sidebar">
+                        @Html.Action("Menu", "Nav")
+                    </ul>
+            </div>
+            <div class="col-xs-8">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div>
+            <p align="center">&copy; @DateTime.Now.Year - @ConstantStrings.NameCompany</p>
+        </div>
+    </footer>
+</body>
+</html>
